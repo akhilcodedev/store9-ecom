@@ -1,15 +1,23 @@
 FROM php:8.2-cli
 
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
     unzip \
     git \
     curl \
-    libpq-dev \
-    && docker-php-ext-install pdo pdo_mysql pdo_pgsql
+    libzip-dev \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip
 
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql zip mbstring exif pcntl bcmath gd
+
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+WORKDIR /app
 
 COPY . .
 
