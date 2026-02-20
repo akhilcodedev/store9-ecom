@@ -34,8 +34,10 @@ COPY --from=nodebuilder /app/public/build ./public/build
 
 RUN composer install --no-dev --optimize-autoloader
 
-CMD php artisan config:cache && \
+CMD php artisan config:clear && \
+    php artisan config:cache && \
     php artisan migrate --force && \
+    php artisan db:seed --force || true && \
     php artisan storage:link || true && \
     php -S 0.0.0.0:10000 -t public
 
